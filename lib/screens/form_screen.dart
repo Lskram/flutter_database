@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class FormScreen extends StatelessWidget {
-  const FormScreen({super.key});
+  FormScreen({super.key});
+
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -10,6 +12,7 @@ class FormScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Form(
+          key: formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -19,6 +22,12 @@ class FormScreen extends StatelessWidget {
                   border: OutlineInputBorder(),
                 ),
                 autofocus: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'กรุณากรอกชื่อรายการ';
+                  }
+                  return null;
+                },
               ),
               TextFormField(
                 decoration: InputDecoration(
@@ -26,6 +35,15 @@ class FormScreen extends StatelessWidget {
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'กรุณากรอกจำนวนเงิน';
+                  }
+                  if(double.parse(value) <=0 || double.tryParse(value) == null) {
+                    return 'ค่าเงินจะต้องไม่ลบและต้องเป็นตัวเลข';
+                  }
+                  return null;
+                },
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -34,7 +52,9 @@ class FormScreen extends StatelessWidget {
                 ),
                 child: const Text("เพิ่มข้อมูล"),
                 onPressed: () {
-                  Navigator.pop(context);
+                  if(formKey.currentState!.validate()){
+                    Navigator.pop(context);
+                  }
                 },
               ),
             ],
