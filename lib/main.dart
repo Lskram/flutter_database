@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_database/models/transaction.dart';
+import 'package:flutter_database/poviders/transaction_provider.dart';
 import 'package:flutter_database/screens/form_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,12 +12,21 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) {
+            return TransactionProvider();
+          },
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        ),
+        home: const MyHomePage(title: 'แอปบัญชี'),
       ),
-      home: const MyHomePage(title: 'แอปบัญชี'),
     );
   }
 }
@@ -49,7 +61,31 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: Container(),
+      body: Consumer(
+        builder: (context, TransactionProvider provider, child) {
+          return ListView.builder(
+            itemCount: provider.transactions.length,
+            itemBuilder: (context, int index) {
+              Transaction data = provider.transactions[index];
+              return Card(
+                elevation: 10,
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 25,
+                  vertical: 10,
+                ),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    radius: 30,
+                    child: Text(data.amount.toString()),
+                  ),
+                  title: Text(data.title),
+                  subtitle: Text(data.date.toString()),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
