@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_database/screens/form_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +33,21 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return FormScreen();
+                  },
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Container(),
     );
