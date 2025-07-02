@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_database/models/transaction.dart';
 import 'package:flutter_database/poviders/transaction_provider.dart';
 import 'package:flutter_database/screens/form_screen.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -61,29 +62,39 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: Consumer(
-        builder: (context, TransactionProvider provider, child) {
-          return ListView.builder(
-            itemCount: provider.transactions.length,
-            itemBuilder: (context, int index) {
-              Transaction data = provider.transactions[index];
-              return Card(
-                elevation: 10,
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 25,
-                  vertical: 10,
-                ),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Text(data.amount.toString()),
+      body: Consumer<TransactionProvider>(
+        builder: (context, provider, child) {
+          var count = provider.transactions.length;
+          if (count == 0) {
+            return Center(
+              child: Text(
+                "ไม่มีข้อมูลรายการธุรกรรม",
+                style: TextStyle(fontSize: 24),
+              ),
+            );
+          } else {
+            return ListView.builder(
+              itemCount: count,
+              itemBuilder: (context, int index) {
+                Transaction data = provider.transactions[index];
+                return Card(
+                  elevation: 10,
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 25,
+                    vertical: 10,
                   ),
-                  title: Text(data.title),
-                  subtitle: Text(data.date.toString()),
-                ),
-              );
-            },
-          );
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      child: Text(data.amount.toString()),
+                    ),
+                    title: Text(data.title),
+                    subtitle: Text(DateFormat("dd/MM/yyyy").format(data.date)),
+                  ),
+                );
+              },
+            );
+          }
         },
       ),
     );

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_database/poviders/transaction_provider.dart';
+import 'package:provider/provider.dart';
+
+import '../models/transaction.dart';
 
 class FormScreen extends StatelessWidget {
   FormScreen({super.key});
@@ -6,8 +10,8 @@ class FormScreen extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
 
   //controller
-  final titleController = TextEditingController();//รับค่าชื่อรายการ
-  final amountController = TextEditingController();//รับค่าจำนวนเงิน
+  final titleController = TextEditingController(); //รับค่าชื่อรายการ
+  final amountController = TextEditingController(); //รับค่าจำนวนเงิน
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +49,8 @@ class FormScreen extends StatelessWidget {
                   if (value == null || value.isEmpty) {
                     return 'กรุณากรอกจำนวนเงิน';
                   }
-                  if(double.parse(value) <=0 || double.tryParse(value) == null) {
+                  if (double.parse(value) <= 0 ||
+                      double.tryParse(value) == null) {
                     return 'ค่าเงินจะต้องไม่ลบและต้องเป็นตัวเลข';
                   }
                   return null;
@@ -58,13 +63,22 @@ class FormScreen extends StatelessWidget {
                 ),
                 child: const Text("เพิ่มข้อมูล"),
                 onPressed: () {
-                  if(formKey.currentState!.validate()){
+                  if (formKey.currentState!.validate()) {
                     var title = titleController.text;
                     var amount = double.parse(amountController.text);
-                    
-                    print(title);
-                    print(amount);
 
+                    Transaction statement = Transaction(
+                      title: title,
+                      amount: double.parse(amountController.text),
+                      date: DateTime.now(),
+                    );
+                    //เรียกใช้ Provider หรือ Bloc เพื่อบันทึกข้อมูลที่นี่
+                    //ตัวอย่างการใช้ Provider
+                    var provider = Provider.of<TransactionProvider>(
+                      context,
+                      listen: false,
+                    );
+                    provider.addTransaction(statement);
                     Navigator.pop(context);
                   }
                 },
